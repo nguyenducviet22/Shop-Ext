@@ -1,7 +1,7 @@
 app_name = "shop_ext"
 app_title = "Shop Ext"
 app_publisher = "David"
-app_description = "Custom Extension"
+app_description = "Shop Extension for Customer Feedback"
 app_email = "nguyenducviet22022004@gmail.com"
 app_license = "mit"
 
