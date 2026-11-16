@@ -2,7 +2,7 @@ import frappe
 
 
 def average_rating_by_customer():
-	return frappe.get_all(
+	return frappe.get_list(
 		"Customer Feedback",
 		fields=[
 			"customer",
