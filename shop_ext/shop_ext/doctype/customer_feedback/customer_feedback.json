@@ -11,7 +11,8 @@
   "feedback_date",
   "rating",
   "comment",
-  "follow_up_actions"
+  "follow_up_actions",
+  "internal_note"
  ],
  "fields": [
   {
@@ -45,12 +46,18 @@
    "fieldtype": "Table",
    "label": "Follow Up Actions",
    "options": "Feedback Action"
+  },
+  {
+   "fieldname": "internal_note",
+   "fieldtype": "Small Text",
+   "label": "Internal Note",
+   "permlevel": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-12 15:34:00.224634",
+ "modified": "2026-11-16 15:22:27.747654",
  "modified_by": "Administrator",
  "module": "Shop Ext",
  "name": "Customer Feedback",
@@ -66,6 +73,40 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
    "share": 1,
    "write": 1
   }
