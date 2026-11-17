@@ -22,7 +22,7 @@ Custom Frappe Framework v16 extension app providing customer feedback management
 - **Frappe Framework**: `version-16` (v16.x)
 - **ERPNext**: `version-16` (v16.x)
 - **Python**: `>= 3.14` (as defined in `pyproject.toml`)
-- **MariaDB**: 10.6+ (default database engine for Frappe Framework)
+- **MariaDB**: version requirement unverified
 
 ---
 
@@ -34,15 +34,16 @@ Run the following commands in your bench directory. Commands not directly execut
 # 1. Fetch the application repository on the version-16 branch (untested)
 bench get-app <repo-url> --branch version-16
 
-# 2. If creating a new site, configure MariaDB login scope for Docker / container environments (untested)
-bench --site <site> new-site <site> --mariadb-user-host-login-scope='%'
+# 2. Create a new site with MariaDB wildcard host login scope (tested)
+bench new-site <site> --mariadb-user-host-login-scope='%' --db-root-password <db-root-password> --admin-password <admin-password>
 
-# 3. Install the app on your site (untested)
+# 3. Install shop_ext on the site (tested)
 bench --site <site> install-app shop_ext
 ```
 
 > [!NOTE]
-> `shop_ext/hooks.py` defines `required_apps = ["frappe", "erpnext"]`. During `install-app`, Frappe automatically checks and ensures `erpnext` is installed on the target site before installing `shop_ext`.
+> `shop_ext/hooks.py` defines `required_apps = ["frappe", "erpnext"]`. Running `bench --site <site> install-app shop_ext` on a fresh site automatically installs `erpnext` first through `required_apps` and then installs `shop_ext` (observed).
+> - A newly created site starts with its scheduler disabled (`SystemSettings.enable_scheduler is UNSET` / `Scheduler is disabled`, observed); the daily task requires enabling the scheduler (enable command unverified).
 
 ---
 
