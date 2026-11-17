@@ -4,6 +4,7 @@ app_publisher = "David"
 app_description = "Shop Extension for Customer Feedback"
 app_email = "nguyenducviet22022004@gmail.com"
 app_license = "mit"
+required_apps = ["frappe", "erpnext"]
 
 # Apps
 # ------------------
