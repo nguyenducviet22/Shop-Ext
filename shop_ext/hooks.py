@@ -170,23 +170,11 @@ app_license = "mit"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"shop_ext.tasks.all"
-# 	],
-# 	"daily": [
-# 		"shop_ext.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"shop_ext.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"shop_ext.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"shop_ext.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": [
+		"shop_ext.tasks.low_rating_counts",
+	],
+}
 
 # Testing
 # -------
@@ -276,4 +264,14 @@ app_license = "mit"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
+
+# Fixtures
+# --------
+fixtures = [
+	{
+		"dt": "Role",
+		"filters": [["name", "in", ["Feedback Reviewer"]]],
+	},
+]
+
 
