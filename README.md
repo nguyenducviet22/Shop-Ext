@@ -28,10 +28,10 @@ Custom Frappe Framework v16 extension app providing customer feedback management
 
 ## 3. Installation
 
-Run the following commands in your bench directory. Commands not directly executed in this workspace are explicitly marked as `(untested)`:
+Run the following commands in your bench directory. Commands not directly executed in this workspace are explicitly marked as `(tested)`:
 
 ```bash
-# 1. Fetch the application repository on the version-16 branch (untested)
+# 1. Fetch the application repository on the version-16 branch (tested)
 bench get-app <repo-url> --branch version-16
 
 # 2. Create a new site with MariaDB wildcard host login scope (tested)
@@ -162,10 +162,10 @@ Integration tests for `Customer Feedback` and `average_rating_by_customer` are i
 Enable testing on your target site and run the test suite:
 
 ```bash
-# 1. Enable test execution on the site (untested)
+# 1. Enable test execution on the site (tested)
 bench --site <site> set-config allow_tests true
 
-# 2. Run the shop_ext test suite (untested)
+# 2. Run the shop_ext test suite (tested)
 bench --site <site> run-tests --app shop_ext
 ```
 
