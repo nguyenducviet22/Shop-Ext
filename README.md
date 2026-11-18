@@ -151,7 +151,7 @@ curl -X GET "https://<site>/api/method/shop_ext.api.average_ratings" \
   	},
   ]
   ```
-- Export fixtures to the app directory using `bench --site <site> export-fixtures` (untested).
+- Export fixtures to the app directory using `bench --site <site> export-fixtures` (tested).
 
 ---
 
