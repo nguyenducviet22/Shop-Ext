@@ -7,13 +7,13 @@ Custom Frappe Framework v16 extension app providing customer feedback management
 ## 1. Overview
 
 `shop_ext` extends Frappe and ERPNext with comprehensive customer feedback capabilities:
-- **`Customer Feedback` DocType**: Primary document capturing feedback linked to `Customer`, with feedback date, integer rating (1–5), customer comment, and confidential internal notes. Automatically named with the series pattern `CF-.YYYY.-.####`.
+- **`Customer Feedback` DocType**: Primary document capturing feedback linked to `Customer`, with feedback date, integer rating (1–5), customer comment, and confidential internal notes. Automatically named with the naming expression `CF-.YYYY.-.####` (`naming_rule: "Expression"`).
 - **`Feedback Action` Child Table**: Embedded table (`follow_up_actions`) tracking operational action items resulting from feedback, including assignee (`User`), due date, and completion status.
 - **Server-Side Validation**: Strict controller-level validation ensuring ratings are integers between 1 and 5, and enforcing mandatory, non-whitespace comments whenever rating is below 3.
 - **Client UX**: Real-time form scripting in `customer_feedback.js` dynamically toggling the mandatory state of `comment` based on rating changes, plus a custom "Customer averages" button on saved documents.
 - **REST API Endpoint**: Whitelisted GET endpoint `shop_ext.api.average_ratings` providing grouped customer rating averages and review counts.
-- **Scheduled Daily Task**: Daily background scheduler task (`shop_ext.tasks.low_rating_counts`) summarizing customers with low ratings (< 3).
-- **Role Fixture**: Bundled `Feedback Reviewer` role managed and exported via Frappe's fixture system.
+- **Scheduled Daily Task**: Daily background scheduler task (`shop_ext.tasks.low_rating_counts`) returning a list of low-rating counts per customer (`rating < 3`); nothing stores, logs, or sends the returned list (whether a scheduled run discards the return value is unverified).
+- **Role Fixture**: Bundled `Feedback Reviewer` role exported via Frappe's fixture system (no `DocPerm` row grants it permissions on `Customer Feedback`).
 
 ---
 
@@ -68,7 +68,7 @@ Permissions for `Customer Feedback` are structured across standard and custom ro
 | **Sales User** | `0` | **Read / Write / Create**: Create, Read, Write, Export, Print, Email, Report (No Delete) | All Level 0 fields |
 | **Sales Manager** | `0` | **Full CRUD**: Create, Read, Write, Delete, Export, Print, Email, Report | All Level 0 fields |
 | **Sales Manager** | `1` | **Read / Write**: Read, Write | `internal_note` (Confidential internal remarks) |
-| **Feedback Reviewer** | Fixture | Exported role fixture for specialized auditing, reporting, and review workflows | Configured via role permissions |
+| **Feedback Reviewer** | Fixture | Exported `Role` fixture only | None (`0` `DocPerm` rows on `Customer Feedback`) |
 
 ---
 
