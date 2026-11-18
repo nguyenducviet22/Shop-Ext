@@ -1,6 +1,6 @@
 # Shop Ext (`shop_ext`)
 
-Custom Frappe Framework v16 extension app providing customer feedback management, follow-up workflows, statistics reporting, and role-based permissions.
+Custom Frappe Framework v16 extension app providing customer feedback management, follow-up action tracking, statistics reporting, and role-based permissions.
 
 ---
 
@@ -20,7 +20,7 @@ Custom Frappe Framework v16 extension app providing customer feedback management
 ## 2. Requirements
 
 - **Frappe Framework**: `version-16` (v16.x)
-- **ERPNext**: `version-16` (v16.x)
+- **ERPNext**: `version-16` (v16.x) — must already be present in the bench (e.g., `bench get-app erpnext --branch version-16`, untested)
 - **Python**: `>= 3.14` (as defined in `pyproject.toml`)
 - **MariaDB**: version requirement unverified
 
@@ -28,10 +28,10 @@ Custom Frappe Framework v16 extension app providing customer feedback management
 
 ## 3. Installation
 
-Run the following commands in your bench directory. Commands not directly executed in this workspace are explicitly marked as `(tested)`:
+Run the following commands in your bench directory. Commands not directly executed in this workspace are explicitly marked as `(untested)`:
 
 ```bash
-# 1. Fetch the application repository on the version-16 branch (tested)
+# 1. Fetch the application repository on the version-16 branch (untested)
 bench get-app <repo-url> --branch version-16
 
 # 2. Create a new site with MariaDB wildcard host login scope (tested)
@@ -52,9 +52,8 @@ bench --site <site> install-app shop_ext
 The repository uses **`version-16`** as its primary default branch rather than `main` or `master`.
 
 ### Justification
-- **Frappe Ecosystem Standard**: Frappe Framework, ERPNext, and official ecosystem apps standardize on branch names matching the major release series (`version-14`, `version-15`, `version-16`).
-- **Seamless `bench get-app` Resolution**: When running `bench get-app <repo-url>` without explicit branch flags, bench automatically attempts to clone the branch matching the bench's active Frappe major version.
-- **Dependency & Compatibility Checks**: Automated deployment environments and CI/CD pipelines use the branch name to validate compatibility constraints against the active Frappe v16 runtime.
+- **Frappe Ecosystem Standard**: `bench --site <site> list-apps` confirmed that `frappe`, `erpnext`, and `shop_ext` all run on branch `version-16`.
+- **Unverified Branch Resolution & CI Claims**: Whether `bench get-app` auto-selects the matching branch without `--branch` and how CI pipelines validate branch names are unverified in this workspace.
 
 ---
 
@@ -65,8 +64,8 @@ Permissions for `Customer Feedback` are structured across standard and custom ro
 | Role | Permlevel | Permissions / Capabilities | Scope / Target Fields |
 | :--- | :---: | :--- | :--- |
 | **System Manager** | `0` | **Full CRUD**: Create, Read, Write, Delete, Export, Print, Email, Report, Share | All Level 0 fields |
-| **Sales User** | `0` | **Read / Write / Create**: Create, Read, Write, Export, Print, Email, Report (No Delete) | All Level 0 fields |
-| **Sales Manager** | `0` | **Full CRUD**: Create, Read, Write, Delete, Export, Print, Email, Report | All Level 0 fields |
+| **Sales User** | `0` | **Create / Read / Write**: Create, Read, Write (No Delete, Export, Print, Email, Report, or Share) | All Level 0 fields |
+| **Sales Manager** | `0` | **Create / Read / Write / Delete**: Create, Read, Write, Delete (No Export, Print, Email, Report, or Share) | All Level 0 fields |
 | **Sales Manager** | `1` | **Read / Write**: Read, Write | `internal_note` (Confidential internal remarks) |
 | **Feedback Reviewer** | Fixture | Exported `Role` fixture only | None (`0` `DocPerm` rows on `Customer Feedback`) |
 
@@ -88,7 +87,7 @@ curl -X GET "https://<site>/api/method/shop_ext.api.average_ratings" \
   -H "Accept: application/json"
 ```
 
-### Example Response
+### Example Response (Illustrative — actual endpoint orders alphabetically by `customer`)
 
 ```json
 {
