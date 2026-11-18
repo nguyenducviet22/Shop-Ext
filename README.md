@@ -52,7 +52,7 @@ bench --site <site> install-app shop_ext
 The repository uses **`version-16`** as its primary default branch rather than `main` or `master`.
 
 ### Justification
-- **Frappe Ecosystem Standard**: `bench --site <site> list-apps` confirmed that `frappe`, `erpnext`, and `shop_ext` all run on branch `version-16`.
+- **Bench Branch Alignment**: `bench --site <site> list-apps` confirmed that `frappe`, `erpnext`, and `shop_ext` all run on branch `version-16`.
 - **Unverified Branch Resolution & CI Claims**: Whether `bench get-app` auto-selects the matching branch without `--branch` and how CI pipelines validate branch names are unverified in this workspace.
 
 ---
