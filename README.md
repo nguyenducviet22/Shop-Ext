@@ -175,8 +175,10 @@ bench --site <site> run-tests --app shop_ext
 ```
 
 ### Covered Test Cases
-1. `test_valid_insert_with_two_child_rows`: Verifies valid document insertion with `rating=4` and 2 child rows in `follow_up_actions`, asserting naming prefix `CF-` and child row count.
-2. `test_rating_out_of_range_raises`: Asserts `frappe.ValidationError` when attempting to insert ratings `0` and `6`.
-3. `test_low_rating_requires_comment`: Asserts `frappe.ValidationError` when inserting `rating=2` with `comment=None`, `""`, or whitespace `"   "`.
-4. `test_average_rating_by_customer_known_data`: Inserts known test ratings and asserts exact calculated `average_rating` and `review_count` values.
-5. `test_reader_with_user_permission_excludes_other_customer`: Switches user to a restricted Sales User with `User Permission` on `"Test Customer"` and asserts that `"Other Customer"` is excluded from `average_rating_by_customer()`.
+1. `test_valid_insert_with_two_child_rows`: Verifies valid document insertion with `rating=4` and 2 child rows in `follow_up_actions`, reloading from DB and asserting naming prefix `CF-` and child row count.
+2. `test_rating_and_comment_boundaries`: Verifies boundary inserts for ratings `1` and `5`, rating `3` with no comment, and rating `2` with a valid comment.
+3. `test_non_integer_rating_types_raise`: Asserts `frappe.ValidationError` when attempting to insert `"4"`, `3.5`, or `True`.
+4. `test_rating_out_of_range_raises`: Asserts `frappe.ValidationError` when attempting to insert ratings `0` and `6`.
+5. `test_low_rating_requires_comment`: Asserts `frappe.ValidationError` when inserting `rating=2` with `comment=None`, `""`, or whitespace `"   "`.
+6. `test_average_rating_by_customer_known_data`: Inserts known test ratings for isolated customers and asserts exact calculated `average_rating` and `review_count` values.
+7. `test_reader_with_user_permission_excludes_other_customer`: Switches user to a restricted Sales User with `User Permission` on `"Test Customer"` and asserts that `"Other Customer"` is excluded from `average_rating_by_customer()`.
