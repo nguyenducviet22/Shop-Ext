@@ -133,38 +133,18 @@ class IntegrationTestCustomerFeedback(IntegrationTestCase):
 
 	def test_average_rating_by_customer_known_data(self):
 		frappe.set_user("Administrator")
-
-		frappe.get_doc({
-			"doctype": "Customer Feedback",
-			"customer": "Test Customer",
-			"rating": 4,
-			"comment": "Good",
-		}).insert()
-
-		frappe.get_doc({
-			"doctype": "Customer Feedback",
-			"customer": "Test Customer",
-			"rating": 2,
-			"comment": "Could be better",
-		}).insert()
-
-		frappe.get_doc({
-			"doctype": "Customer Feedback",
-			"customer": "Other Customer",
-			"rating": 5,
-			"comment": "Excellent",
-		}).insert()
-
-		results = average_rating_by_customer()
-		stats_by_customer = {r["customer"]: r for r in results}
-
-		self.assertIn("Test Customer", stats_by_customer)
-		self.assertEqual(flt(stats_by_customer["Test Customer"]["average_rating"]), 3.0)
-		self.assertEqual(stats_by_customer["Test Customer"]["review_count"], 2)
-
-		self.assertIn("Other Customer", stats_by_customer)
-		self.assertEqual(flt(stats_by_customer["Other Customer"]["average_rating"]), 5.0)
-		self.assertEqual(stats_by_customer["Other Customer"]["review_count"], 1)
+		ca, cb = f"Stats A {frappe.generate_hash(length=6)}", f"Stats B {frappe.generate_hash(length=6)}"
+		for cn in (ca, cb):
+			d = frappe.get_doc({"doctype": "Customer", "customer_name": cn, "customer_type": "Individual"})
+			d.flags.ignore_mandatory = True
+			d.insert(ignore_permissions=True)
+			if d.name != cn:
+				frappe.rename_doc("Customer", d.name, cn, force=True, ignore_permissions=True)
+		for cn, r in ((ca, 4), (ca, 2), (cb, 5)):
+			frappe.get_doc({"doctype": "Customer Feedback", "customer": cn, "rating": r, "comment": "ok"}).insert()
+		s = {x["customer"]: x for x in average_rating_by_customer()}
+		self.assertEqual((flt(s[ca]["average_rating"]), s[ca]["review_count"]), (3.0, 2))
+		self.assertEqual((flt(s[cb]["average_rating"]), s[cb]["review_count"]), (5.0, 1))
 
 	def test_reader_with_user_permission_excludes_other_customer(self):
 		frappe.get_doc({
