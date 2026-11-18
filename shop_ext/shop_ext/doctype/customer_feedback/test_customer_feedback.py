@@ -17,11 +17,9 @@ class IntegrationTestCustomerFeedback(IntegrationTestCase):
 		self.reader_email = "test_reader@example.com"
 		self.create_customers()
 		self.create_reader_user_with_permission()
-		frappe.db.delete("Customer Feedback", {"customer": ["in", ["Test Customer", "Other Customer"]]})
 
 	def tearDown(self):
 		frappe.set_user("Administrator")
-		frappe.db.delete("Customer Feedback", {"customer": ["in", ["Test Customer", "Other Customer"]]})
 		super().tearDown()
 
 	def create_customers(self):
@@ -32,6 +30,8 @@ class IntegrationTestCustomerFeedback(IntegrationTestCase):
 					"customer_name": name,
 					"customer_type": "Individual",
 				})
+				# Clean sites lack default Customer Group/Territory; ignore_mandatory avoids seeding unrelated trees.
+				# Clean sites lack default Customer Group/Territory; ignore_mandatory avoids seeding unrelated trees.
 				doc.flags.ignore_mandatory = True
 				doc.insert(ignore_permissions=True)
 				if doc.name != name:
@@ -75,8 +75,19 @@ class IntegrationTestCustomerFeedback(IntegrationTestCase):
 			],
 		}).insert()
 
-		self.assertTrue(doc.name.startswith("CF-"))
-		self.assertEqual(len(doc.follow_up_actions), 2)
+		reloaded = frappe.get_doc("Customer Feedback", doc.name)
+		self.assertTrue(reloaded.name.startswith("CF-"))
+		self.assertEqual(len(reloaded.follow_up_actions), 2)
+
+	def test_rating_and_comment_boundaries(self):
+		for rating, comment in ((1, "Min valid"), (5, "Max valid"), (3, None), (2, "Valid low comment")):
+			doc = frappe.get_doc({"doctype": "Customer Feedback", "customer": "Test Customer", "rating": rating, "comment": comment}).insert()
+			self.assertEqual(doc.rating, rating)
+
+	def test_non_integer_rating_types_raise(self):
+		for bad in ("4", 3.5, True):
+			with self.assertRaises(frappe.ValidationError):
+				frappe.get_doc({"doctype": "Customer Feedback", "customer": "Test Customer", "rating": bad, "comment": "Bad type"}).insert()
 
 	def test_rating_out_of_range_raises(self):
 		with self.assertRaises(frappe.ValidationError):
@@ -180,3 +191,12 @@ class IntegrationTestCustomerFeedback(IntegrationTestCase):
 			frappe.set_user("Administrator")
 
 
+
+	def test_rating_and_comment_boundaries(self):
+		for r, c in ((1, "Min"), (5, "Max"), (3, None), (2, "Low")):
+			self.assertEqual(frappe.get_doc({"doctype": "Customer Feedback", "customer": "Test Customer", "rating": r, "comment": c}).insert().rating, r)
+
+	def test_non_integer_rating_types_raise(self):
+		for bad in ("4", 3.5, True):
+			with self.assertRaises(frappe.ValidationError):
+				frappe.get_doc({"doctype": "Customer Feedback", "customer": "Test Customer", "rating": bad, "comment": "Bad"}).insert()

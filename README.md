@@ -42,7 +42,7 @@ bench --site <site> install-app shop_ext
 ```
 
 > [!NOTE]
-> `shop_ext/hooks.py` defines `required_apps = ["frappe", "erpnext"]`. Running `bench --site <site> install-app shop_ext` on a fresh site automatically installs `erpnext` first through `required_apps` and then installs `shop_ext` (observed).
+> `shop_ext/hooks.py` defines `required_apps = ["frappe", "erpnext"]`. Running `bench --site <site> install-app shop_ext` on a fresh site also installed `erpnext` first before installing `shop_ext` (observed; inferred that `required_apps = ["frappe", "erpnext"]` triggered this because installing without `required_apps` was not tested).
 > - A newly created site starts with its scheduler disabled (`SystemSettings.enable_scheduler is UNSET` / `Scheduler is disabled`, observed); the daily task requires enabling the scheduler (enable command unverified).
 
 ---
@@ -159,7 +159,12 @@ curl -X GET "https://<site>/api/method/shop_ext.api.average_ratings" \
 
 Integration tests for `Customer Feedback` and `average_rating_by_customer` are implemented in `apps/shop_ext/shop_ext/shop_ext/doctype/customer_feedback/test_customer_feedback.py`.
 
-Enable testing on your target site and run the test suite:
+> [!WARNING]
+> Run tests only on a throwaway site (such as `shoptest.localhost`), never on a production or shared development site.
+>
+> **Coverage note**: `shop_ext/api.py` and `shop_ext/tasks.py` do not have dedicated unit tests yet.
+
+Enable testing on your throwaway site and run the test suite:
 
 ```bash
 # 1. Enable test execution on the site (tested)
